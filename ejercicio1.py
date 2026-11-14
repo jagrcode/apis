@@ -1,15 +1,8 @@
 import requests
-url = "https://pokeapi.co/api/v2/pokemon/pikachu"
-respuesta = requests.get(url, timeout=15)
-print("Código de estado:", respuesta.status_code)
-print("Content-Type:", respuesta.headers["Content-Type"])
+import json
 
-datos = respuesta.json()
-print (datos)
-print("Nombre:", datos["name"])
-print("Altura:", datos["height"])
-print("Peso:", datos["weight"])
-print("Tipos:", [t["type"]["name"] for t in datos["types"]])
+url = "https://pokeapi.co/api/v2/pokemon/pikachu"
+
 
 def buscar_pokemon(nombre):
     url = f"https://pokeapi.co/api/v2/pokemon/{nombre.lower()}"
@@ -30,5 +23,14 @@ def buscar_pokemon(nombre):
         "peso": datos["weight"],
     }
 
-for nombre in ["pikachu", "charmander", "noexiste"]:
-    print(buscar_pokemon(nombre))
+
+def guardar_json(datos, archivo="pokemon.json"):
+    with open(archivo, "w", encoding="utf-8") as f:
+        json.dump(datos, f, indent=4, ensure_ascii=False)
+    print(f"Guardado en {archivo}")
+
+     
+nombre =  input("Ingrese el nombre del Pokémon: ")
+resultado = buscar_pokemon(nombre)
+if resultado:
+    guardar_json(resultado)
