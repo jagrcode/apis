@@ -56,25 +56,29 @@ for p in pokemones[:20]:
 guardar_csv(detalles, "pokemones_detalle.csv",
             ["id", "nombre", "altura", "peso", "tipos"])
 
-def leer_csv():
-    with open("pokemones_detalle.csv", newline="", encoding="utf-8-sig") as f:
+def leer_csv(archivo="pokemones_detalle.csv"):
+    with open(archivo, newline="", encoding="utf-8-sig") as f:
         lector = csv.DictReader(f)
         print("Columnas:", lector.fieldnames)
-        print("Primeras 5 filas:")
-        for i, fila in enumerate(lector):
-            if i >= 5:
-                break
-            print(fila)
-        return list(lector)
+        filas = list(lector)          # lee todo una sola vez
 
-def agregar_peso_kg():
-    csv.DictWriter=csv.DictWriter
-    with open("pokemones_detalle.csv", newline="", encoding="utf-8-sig") as f:
+    print("Primeras 5 filas:")
+    for fila in filas[:5]:
+        print(fila)
+    return filas
+
+
+
+def agregar_peso_kg(archivo="pokemones_detalle.csv"):
+    with open(archivo, newline="", encoding="utf-8-sig") as f:
         lector = csv.DictReader(f)
+        columnas = lector.fieldnames + ["peso_kg"]
         filas = []
         for fila in lector:
             fila["peso_kg"] = round(int(fila["peso"]) / 10, 1)
             filas.append(fila)
+
+    guardar_csv(filas, "pokemones_detalle_kg.csv", columnas)
     return filas
 
     

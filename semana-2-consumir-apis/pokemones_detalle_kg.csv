@@ -1,0 +1,21 @@
+﻿id,nombre,altura,peso,tipos,peso_kg
+1,bulbasaur,7,69,"grass, poison",6.9
+2,ivysaur,10,130,"grass, poison",13.0
+3,venusaur,20,1000,"grass, poison",100.0
+4,charmander,6,85,fire,8.5
+5,charmeleon,11,190,fire,19.0
+6,charizard,17,905,"fire, flying",90.5
+7,squirtle,5,90,water,9.0
+8,wartortle,10,225,water,22.5
+9,blastoise,16,855,water,85.5
+10,caterpie,3,29,bug,2.9
+11,metapod,7,99,bug,9.9
+12,butterfree,11,320,"bug, flying",32.0
+13,weedle,3,32,"bug, poison",3.2
+14,kakuna,6,100,"bug, poison",10.0
+15,beedrill,10,295,"bug, poison",29.5
+16,pidgey,3,18,"normal, flying",1.8
+17,pidgeotto,11,300,"normal, flying",30.0
+18,pidgeot,15,395,"normal, flying",39.5
+19,rattata,3,35,normal,3.5
+20,raticate,7,185,normal,18.5
