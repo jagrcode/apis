@@ -1,7 +1,7 @@
 import sqlite3
 from contextlib import contextmanager
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, Field
 from auth import comprobar, crear_token, hashear, verificar_token
@@ -88,10 +88,23 @@ def usuario_actual(token: str = Depends(oauth2)):
 
 
 @app.get("/tareas", response_model=list[Tarea], tags=["tareas"])
-def listar():
-    limit = 3
+def listar(
+    limit: int = Query(10, ge=1, le=100, description="Máximo de tareas a devolver"),
+    offset: int = Query(0, ge=0, description="Cuántas tareas saltar"),
+    hecha: bool | None = Query(None, description="Filtrar por estado"),
+):
+    sql = "SELECT * FROM tareas"
+    valores = []
+
+    if hecha is not None:
+        sql += " WHERE hecha = ?"
+        valores.append(int(hecha))
+
+    sql += " ORDER BY id LIMIT ? OFFSET ?"
+    valores += [limit, offset]
+
     with db() as con:
-        filas = con.execute("SELECT * FROM tareas ORDER BY id LIMIT ?", (limit,)).fetchall()
+        filas = con.execute(sql, valores).fetchall()
     return [a_tarea(f) for f in filas]
 
 
@@ -103,12 +116,6 @@ def obtener(tarea_id: int):
         raise HTTPException(status_code=404, detail="Tarea no encontrada")
     return a_tarea(fila)
 
-
-@app.get("/tareas/{hecha}", response_model=Tarea, tags=["tareas"])
-def obtener2(hecha: bool):
-    with db() as con:
-        filas = con.execute("SELECT * FROM tareas WHERE hecha = ?", (int(hecha),)).fetchall()
-    return [a_tarea(f) for f in filas]
 
 
 @app.post("/tareas", response_model=Tarea, status_code=201, tags=["tareas"])
@@ -136,9 +143,10 @@ def reemplazar(tarea_id: int, datos: TareaCrear, usuario: dict = Depends(usuario
 
 @app.delete("/tareas/{tarea_id}", status_code=204, tags=["tareas"])
 def eliminar(tarea_id: int, usuario: dict = Depends(usuario_actual)):
+    if usuario["rol"] != "admin":
+       raise HTTPException(status_code=403, detail="No tienes permiso para eliminar tareas")
+
     with db() as con:
-        if usuario["rol"] != "admin":
-            raise HTTPException(status_code=403, detail="No tienes permiso para eliminar tareas")
         else:
             cur = con.execute("DELETE FROM tareas WHERE id = ?", (tarea_id,))
             if cur.rowcount == 0:
