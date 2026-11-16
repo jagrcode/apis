@@ -145,9 +145,9 @@ def reemplazar(tarea_id: int, datos: TareaCrear, usuario: dict = Depends(usuario
 def eliminar(tarea_id: int, usuario: dict = Depends(usuario_actual)):
     if usuario["rol"] != "admin":
        raise HTTPException(status_code=403, detail="No tienes permiso para eliminar tareas")
-
+    
     with db() as con:
-        else:
+        
             cur = con.execute("DELETE FROM tareas WHERE id = ?", (tarea_id,))
             if cur.rowcount == 0:
                 raise HTTPException(status_code=404, detail="Tarea no encontrada")
