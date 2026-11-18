@@ -1,0 +1,32 @@
+openapi: 3.0.3
+info:
+  title: Resumen de tareas
+  version: 1.0.0
+paths:
+  /tareas/resumen:
+    get:
+      summary: Resumen de tareas
+      description: Cuenta las tareas totales, hechas y pendientes.
+      tags: [tareas]
+      responses:
+        "200":
+          description: Conteo de tareas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resumen"
+components:
+  schemas:
+    Resumen:
+      type: object
+      required: [total, hechas, pendientes]
+      properties:
+        total:
+          type: integer
+          example: 10
+        hechas:
+          type: integer
+          example: 4
+        pendientes:
+          type: integer
+          example: 6
